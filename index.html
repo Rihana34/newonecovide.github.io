@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com"
+        />
+        <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;1,100&family=Zen+Tokyo+Zoo&display=swap"
+            rel="stylesheet"
+        />
+        <title>Covid 19 Display Charts</title>
+        <!-- Include Highcharts library -->
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <style>
+            body {
+                font-family: "Roboto", sans-serif;
+                font-weight: 500;
+                background-color: antiquewhite;
+            }
+        </style>
+    </head>
+    <body>
+        <nav
+            class="navbar navbar-expand-lg navbar-light bg-light"
+        >
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"
+                    >Covid -19</a
+                >
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span
+                        class="navbar-toggler-icon"
+                    ></span>
+                </button>
+                <div
+                    class="collapse navbar-collapse"
+                    id="navbarSupportedContent"
+                >
+                    <ul
+                        class="navbar-nav me-auto mb-2 mb-lg-0"
+                    >
+                        <li class="nav-item">
+                            <a
+                                class="nav-link active"
+                                aria-current="page"
+                                href="#"
+                                >Dash_Bored</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"
+                                >Current Us Data</a
+                            >
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                id="navbarDropdown"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                Show Covid-19 Case
+                            </a>
+                            <ul
+                                class="dropdown-menu"
+                                aria-labelledby="navbarDropdown"
+                            >
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="#"
+                                        >Historic US
+                                        values</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="#"
+                                    >
+                                        Current US values
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr
+                                        class="dropdown-divider"
+                                    />
+                                </li>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="#"
+                                        >US historic values
+                                        for a date
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input
+                            class="form-control me-2"
+                            type="search"
+                            placeholder="Search"
+                            aria-label="Search"
+                        />
+                        <button
+                            class="btn btn-outline-success"
+                            type="submit"
+                        >
+                            Search
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container py-5">
+            <div class="row row-cols-2">
+                <div id="lineChart" class="col mb-5"></div>
+                <div id="barChart" class="col mb-5"></div>
+                <div id="pieChart" class="col"></div>
+                <div id="columnChart" class="col"></div>
+            </div>
+        </div>
+
+        <script>
+            fetch(
+                "https://api.covidtracking.com/v1/us/daily.json"
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    const chartData = data.reverse(); // Reverse data array for chronological order
+
+                    // Extract years and population values
+                    const years = chartData.map(
+                        (entry) => entry.date
+                    );
+                    const dataPositive = chartData.map(
+                        (entry) => entry.positive
+                    );
+
+                    // Line Chart
+                    Highcharts.chart("lineChart", {
+                        title: {
+                            text: "Current US values Of Covid-19",
+                        },
+                        xAxis: {
+                            categories: chartData.map(
+                                (entry) => entry.date
+                            ),
+                        },
+                        yAxis: {
+                            title: {
+                                text: "Covid-19 postive test result per day",
+                            },
+                        },
+                        series: [
+                            {
+                                name: "Data Positive",
+                                data: dataPositive,
+                            },
+                        ],
+                    });
+                })
+                .catch((error) => {
+                    console.log(
+                        "Error fetching data:",
+                        error
+                    );
+                });
+
+            fetch(
+                "https://api.covidtracking.com/v1/us/daily.json"
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    const chartData = data.reverse(); // Reverse data array for chronological order
+
+                    // Extract years and population values
+                    const years = chartData.map(
+                        (entry) => entry.date
+                    );
+                    const TotalPositive = chartData.map(
+                        (entry) => entry.positive
+                    );
+
+                    // Bar Chart
+                    Highcharts.chart("barChart", {
+                        chart: {
+                            type: "bar",
+                        },
+                        title: {
+                            text: "Us covid-19 Positive Test Result",
+                        },
+                        xAxis: {
+                            categories: years,
+                        },
+                        yAxis: {
+                            title: {
+                                text: "Positive Result out of the Total Responds",
+                            },
+                        },
+                        series: [
+                            {
+                                name: "Positive Result out of the Total Responds",
+                                data: TotalPositive,
+                            },
+                        ],
+                    });
+                })
+                .catch((error) => {
+                    console.log(
+                        "Error fetching data:",
+                        error
+                    );
+                });
+
+            fetch(
+                "https://api.covidtracking.com/v1/us/current.json"
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    // Pie Chart
+                    const dataNew = [
+                        {
+                            name: "positive",
+                            y: data[0].positive,
+                        },
+                        {
+                            name: "negative",
+                            y: data.negative,
+                        },
+                        {
+                            name: "totalTestResultsIncrease",
+                            y: data[0]
+                                .totalTestResultsIncrease,
+                        },
+                        {
+                            name: "hospitalizedCumulative",
+                            y: data[0]
+                                .hospitalizedCumulative,
+                        },
+                        { name: "death", y: data[0].death },
+                    ];
+                    Highcharts.chart("pieChart", {
+                        chart: {
+                            type: "pie",
+                        },
+                        title: {
+                            text: "Covid -19 Current Data",
+                        },
+                        series: [
+                            {
+                                name: "Browsers",
+                                data: dataNew,
+                            },
+                        ],
+                    });
+                })
+                .catch((error) => {
+                    console.log(
+                        "Error fetching data:",
+                        error
+                    );
+                });
+
+            fetch(
+                "https://api.covidtracking.com/v1/us/current.json"
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    // Pie Chart
+                    const dataNew = [
+                        {
+                            name: "positive",
+                            y: data[0].positive,
+                        },
+                        {
+                            name: "negative",
+                            y: data.negative,
+                        },
+                        {
+                            name: "totalTestResultsIncrease",
+                            y: data[0]
+                                .totalTestResultsIncrease,
+                        },
+                        {
+                            name: "hospitalizedCumulative",
+                            y: data[0]
+                                .hospitalizedCumulative,
+                        },
+                        { name: "death", y: data[0].death },
+                    ];
+                    Highcharts.chart("pieChart", {
+                        chart: {
+                            type: "pie",
+                        },
+                        title: {
+                            text: "Cummulative and Death Rate",
+                        },
+                        series: [
+                            {
+                                name: "Browsers",
+                                data: dataNew,
+                            },
+                        ],
+                    });
+                })
+                .catch((error) => {
+                    console.log(
+                        "Error fetching data:",
+                        error
+                    );
+                });
+
+            fetch(
+                "https://api.covidtracking.com/v1/us/20200501.json"
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    // Column Chart
+                    Highcharts.chart("columnChart", {
+                        chart: {
+                            type: "column",
+                        },
+                        title: {
+                            text: "US historic values for a date",
+                        },
+                        xAxis: {
+                            categories: [
+                                "Positive",
+                                "Negative",
+                                "Hospitalized",
+                                "Pending",
+                                "Death",
+                            ],
+                        },
+                        yAxis: {
+                            title: {
+                                text: "covid-19 Test Result",
+                            },
+                        },
+                        series: [
+                            {
+                                name: "Test Result In us",
+                                data: [
+                                    data.positive,
+                                    data.negative,
+                                    data.hospitalized,
+                                    data.pending,
+                                    data.death,
+                                ],
+                            },
+                            {
+                                name: "Test Preserd Test us",
+                                data: [
+                                    data.negative,
+                                    data.positive,
+                                    data.pending,
+                                    data.pending,
+                                    data.negativeIncrease,
+                                ],
+                            },
+                        ],
+                    });
+                })
+                .catch((error) => {
+                    console.log(
+                        "Error fetching data:",
+                        error
+                    );
+                });
+
+            // Column Chart
+            Highcharts.chart("columnChart", {
+                chart: {
+                    type: "column",
+                },
+                title: {
+                    text: "Covid-19 Recent Data)",
+                },
+                xAxis: {
+                    categories: years,
+                },
+                yAxis: {
+                    title: {
+                        text: "Positive",
+                    },
+                },
+                series: [
+                    {
+                        name: "Positive Data",
+                        data: populations,
+                    },
+                ],
+            });
+        </script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>
